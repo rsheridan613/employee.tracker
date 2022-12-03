@@ -1,5 +1,3 @@
-USE employees_db;
-
 INSERT INTO department(id, name)
 VALUES
 (001, "Executive"),
@@ -15,4 +13,6 @@ VALUES
 (004, "HR Manager", 165.000, 003),
 (005, "HR Expert", 100,000, 003),
 (006, "R+D Manager", 180.000, 004),
-(006, "R+D Expert", 155.000, 004),
+(007, "R+D Expert", 155.000, 004);
+
+INSERT INTO employee (id, first_name, last_name, role_id, manager_id)

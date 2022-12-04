@@ -63,13 +63,42 @@ function viewEmployees() {
 }
 
 function addEmployee() {
-  // Input employee’s first name, last name, role (by name?), manager (by name?)
-  db.query(``, (err, table) => {
-    if (err) {
-      console.error(err);
-    } else console.log(`Added employee`);
-    goBack();
-  });
+  // Input employee’s first name, last name, role id, manager id
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the employee's first name?",
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the employee's last name?",
+      },
+      {
+        type: "input",
+        name: "role",
+        message: "What is the ID for the employee's role?",
+      },
+      {
+        type: "input",
+        name: "manager",
+        message: "What is the ID for this person's manager?",
+      },
+    ])
+    .then((response) => {
+      db.query(
+        `INSERT INTO employee(first_name, last_name, role_id, manager_id)
+    VALUES ("${response.firstName}", "${response.lastName}", ${response.role}, ${response.manager})`,
+        (err, table) => {
+          if (err) {
+            console.error(err);
+          } else console.log(`Added employee`);
+          goBack();
+        }
+      );
+    });
 }
 
 function updateRole() {
@@ -94,12 +123,36 @@ function viewRoles() {
 
 function addRole() {
   // Input role name, salary, department it belongs to
-  db.query(``, (err, table) => {
-    if (err) {
-      console.error(err);
-    } else console.log(`Role added`);
-    goBack();
-  });
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "role",
+        message: "What is this role called?",
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "What is the salary for this possition?",
+      },
+      {
+        type: "input",
+        name: "department",
+        message: "What department ID does this role belong to?",
+      },
+    ])
+    .then((response) => {
+      db.query(
+        `INSERT INTO roles(title, salary, department_id) 
+        VALUES ("${response.role}", ${response.salary}, ${response.department});`,
+        (err, table) => {
+          if (err) {
+            console.error(err);
+          } else console.log(`${response.role} added to roles`);
+          goBack();
+        }
+      );
+    });
 }
 
 function viewDepartments() {
@@ -114,12 +167,23 @@ function viewDepartments() {
 
 function addDepartment() {
   // Input department name
-  db.query(``, (err, table) => {
-    if (err) {
-      console.error(err);
-    } else console.log(`Department added`);
-    goBack();
-  });
+  inquirer
+    .prompt({
+      type: "input",
+      name: "department",
+      message: "What is the department called?",
+    })
+    .then((response) => {
+      db.query(
+        `INSERT INTO departments(name) VALUES ("${response.department}")`,
+        (err, table) => {
+          if (err) {
+            console.error(err);
+          } else console.log(`${response.department} added to departments`);
+          goBack();
+        }
+      );
+    });
 }
 
 function goBack() {

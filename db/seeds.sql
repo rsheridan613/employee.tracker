@@ -17,8 +17,8 @@ VALUES
 
 INSERT INTO employee(first_name, last_name, role_id, manager_id)
 VALUES
-(),
-(),
-(),
-(),
-();
+("Master", "Yoda", 1, NULL),
+("Qui-Gon", "Jinn", 2, 1),
+("Obi-Wan", "Kenobi", 3, 2),
+("Anakin","Skywalker", 4, 1),
+("Ahsoka", "Tano", 5, 4);

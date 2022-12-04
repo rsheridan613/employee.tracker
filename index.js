@@ -5,9 +5,9 @@ require("dotenv").config();
 const db = mysql.createConnection(
   {
     host: "localhost",
-    user: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   },
   console.log(`Connected to the database.`)
 );
@@ -15,25 +15,23 @@ const db = mysql.createConnection(
 function init() {
   function opener() {
     inquirer
-      .prompt([
-        {
-          type: "list",
-          name: "opener",
-          message: "What would you like to do?",
-          choices: [
-            "View all employees",
-            "Add an employee",
-            "Update employee role",
-            "View all roles",
-            "Add a role",
-            "View all departments",
-            "Add a department",
-            "Exit",
-          ],
-        },
-      ])
+      .prompt({
+        type: "list",
+        name: "opener",
+        message: "What would you like to do?",
+        choices: [
+          "View all employees",
+          "Add an employee",
+          "Update employee role",
+          "View all roles",
+          "Add a role",
+          "View all departments",
+          "Add a department",
+          "Exit",
+        ],
+      })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.opener === "View all employees") {
           viewEmployees();
         } else if (response.opener === "Add an employee") {
@@ -49,44 +47,91 @@ function init() {
         } else if (response.opener === "Add a department") {
           addDepartment();
         } else if (response.opener === "Exit") {
-          console.log(`See ya`);
+          exitApp();
         }
       });
   }
+
   function viewEmployees() {
-    db.query(``);
-  }
-
-  function addEmployees() {
-    db.query(``);
-  }
-
-  function updateRole() {
-    db.query(``);
-  }
-
-  function viewRoles() {
-    db.query(`SHOW * FROM roles;`, (err, table) => {
+    db.query(``, (err, table) => {
       if (err) {
         console.error(err);
       } else console.log(table);
+      goBack();
+    });
+  }
+
+  function addEmployees() {
+    db.query(``, (err, table) => {
+      if (err) {
+        console.error(err);
+      } else console.log(table);
+      goBack();
+    });
+  }
+
+  function updateRole() {
+    db.query(``, (err, table) => {
+      if (err) {
+        console.error(err);
+      } else console.log(table);
+      goBack();
+    });
+  }
+
+  function viewRoles() {
+    db.query(`SELECT * FROM roles;`, (err, table) => {
+      if (err) {
+        console.error(err);
+      } else console.log(table);
+      goBack();
     });
   }
 
   function addRole() {
-    db.query(``);
-  }
-
-  function viewDepartments() {
-    db.query(`SHOW * FROM departments;`, (err, table) => {
+    db.query(``, (err, table) => {
       if (err) {
         console.error(err);
       } else console.log(table);
+      goBack();
+    });
+  }
+
+  function viewDepartments() {
+    db.query(`SELECT * FROM departments;`, (err, table) => {
+      if (err) {
+        console.error(err);
+      } else console.log(table);
+      goBack();
     });
   }
 
   function addDepartment() {
-    db.query(``);
+    db.query(``, (err, table) => {
+      if (err) {
+        console.error(err);
+      } else console.log(table);
+      goBack();
+    });
+  }
+
+  function goBack() {
+    inquirer
+      .prompt({
+        type: "list",
+        name: "goBack",
+        message: "What would you like to do?",
+        choices: ["See something else", "Exit"],
+      })
+      .then((response) => {
+        if (response.goBack === "See something else") {
+          opener();
+        } else exitApp();
+      });
+  }
+
+  function exitApp() {
+    console.log(`See ya`);
   }
 
   opener();

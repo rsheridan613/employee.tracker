@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
+const cTable = require("console.table");
 require("dotenv").config();
 
 const db = mysql.createConnection(
@@ -56,7 +57,7 @@ function init() {
     db.query(``, (err, table) => {
       if (err) {
         console.error(err);
-      } else console.log(table);
+      } else console.table(table);
       goBack();
     });
   }
@@ -65,7 +66,7 @@ function init() {
     db.query(``, (err, table) => {
       if (err) {
         console.error(err);
-      } else console.log(table);
+      } else console.log(`Added employee`);
       goBack();
     });
   }
@@ -74,7 +75,7 @@ function init() {
     db.query(``, (err, table) => {
       if (err) {
         console.error(err);
-      } else console.log(table);
+      } else console.log(`Updated employee's role`);
       goBack();
     });
   }
@@ -83,7 +84,7 @@ function init() {
     db.query(`SELECT * FROM roles;`, (err, table) => {
       if (err) {
         console.error(err);
-      } else console.log(table);
+      } else console.table(table);
       goBack();
     });
   }
@@ -92,7 +93,7 @@ function init() {
     db.query(``, (err, table) => {
       if (err) {
         console.error(err);
-      } else console.log(table);
+      } else console.log(`Role added`);
       goBack();
     });
   }
@@ -101,7 +102,7 @@ function init() {
     db.query(`SELECT * FROM departments;`, (err, table) => {
       if (err) {
         console.error(err);
-      } else console.log(table);
+      } else console.table(table);
       goBack();
     });
   }
@@ -110,7 +111,7 @@ function init() {
     db.query(``, (err, table) => {
       if (err) {
         console.error(err);
-      } else console.log(table);
+      } else console.log(`Department added`);
       goBack();
     });
   }

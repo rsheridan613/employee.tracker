@@ -1,6 +1,7 @@
-INSERT INTO departments(department)
+INSERT INTO department(name)
 VALUES
 ("Executive"),
+
 ("Finance"),
 ("Human Recources"),
 ("Research and Development");

@@ -94,7 +94,7 @@ function addEmployee() {
         (err, table) => {
           if (err) {
             console.error(err);
-          } else console.log(`Added employee`);
+          } else console.log(`Added  ${response.firstName} to employees`);
           goBack();
         }
       );
@@ -113,12 +113,16 @@ function updateRole() {
 
 function viewRoles() {
   // Show role id, name, salary, department (by name?)
-  db.query(`SELECT * FROM roles;`, (err, table) => {
-    if (err) {
-      console.error(err);
-    } else console.table(table);
-    goBack();
-  });
+  db.query(
+    `SELECT roles.id, title, salary FROM roles
+    JOIN departments ON roles.department_id = departments.id;`,
+    (err, table) => {
+      if (err) {
+        console.error(err);
+      } else console.table(table);
+      goBack();
+    }
+  );
 }
 
 function addRole() {

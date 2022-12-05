@@ -8,7 +8,7 @@ inquirer, mysql2, console.table, dotenv
 
 ## Usage
 
-Run `npm start` in your terminal. Choose an option from the prompt. Manage your employees from the console.
+Run ```npm start``` in your terminal. Choose an option from the prompt. Manage your employees from the console.
 
 ## Demonstration
 

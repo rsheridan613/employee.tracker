@@ -266,6 +266,7 @@ function goBack() {
 
 function exitApp() {
   console.log(`See ya`);
+  process.exit(0);
 }
 
 init();

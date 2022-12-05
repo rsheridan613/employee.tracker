@@ -55,9 +55,9 @@ function init() {
 function viewEmployees() {
   // Show employee ids, first names, last names, role, departments (by name?), salaries, manager (by name?)
   db.query(
-    `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary, manager_id.first_name AS Manager
+    `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, manager_id.first_name AS manager
     FROM employee
-    JOIN role ON employee.role_id = roles.id
+    JOIN role ON employee.role_id = role.id
     JOIN department ON role.department_id = department.id
     JOIN employee manager_id ON manager_id.id = employee.manager_id;`,
     (err, table) => {
@@ -110,50 +110,60 @@ function addEmployee() {
 
 function updateRole() {
   // Choose employee, change role to selected
-  var employees = db.query(`SELECT first_name, id FROM employee;`)(([rows]) => {
-    let employees = rows;
-    const employeeChoices = employees.map(({ id, first_name }) => ({
-      name: first_name,
-      value: id,
-    }));
+  db.query(`SELECT id, first_name, last_name FROM employee;`, (err, table) => {
+    const employeeNames = [];
+    let roleId = "";
+    let employeeId = "";
 
+    table.forEach((el) => {
+      employeeNames.push(`${el.first_name} ${el.last_name}`);
+    });
     inquirer
-      .prompt([
-        {
-          type: "list",
-          choices: employeeChoices,
-          message: "Which employee would you like to update?",
-          name: "pickedEmployee",
-        },
-      ])
-      .then((response) => {
-        db.query(`SELECT title, id FROM roles`).then(([rows]) => {
-          let titles = rows;
-          const titleChoices = titles.map(({ id, title }) => ({
-            role: title,
-            value: id,
-          }));
+      .prompt({
+        type: "list",
+        choices: employeeNames,
+        name: "chosenEmployee",
+        message: "Which employee's role would you like to change?",
+      })
+      .then((employee) => {
+        for (let i = 0; i < table.length; i++) {
+          if (
+            employee.chosenEmployee ===
+            `${table[i].first_name} ${table[i].last_name}`
+          ) {
+            employeeId = table[i].id;
+          }
+        }
+        db.query(`SELECT * FROM role;`, (err, column) => {
+          const roleTitles = [];
+          column.forEach((el) => {
+            roleTitles.push(`${el.title}`);
+          });
           inquirer
             .prompt({
               type: "list",
-              choices: titleChoices,
-              message: "Which role would you like to give them?",
-              name: "pickedRole",
+              choices: roleTitles,
+              name: "chosenRole",
+              message: "Which role would you like to change to?",
             })
-            .then((choices) => {
+            .then((role) => {
+              for (let i = 0; i < column.length; i++) {
+                if (role.chosenRole === column[i].title) {
+                  roleId = column[i].id;
+                }
+              }
               db.query(
-                `UPDATE employees SET role_id = ${choices.pickedRole} WHERE id = ${response.pickedEmployee} `
+                `UPDATE employee SET role_id = ${roleId} WHERE id = ${employeeId}`,
+                (err, table) => {
+                  if (err) {
+                    console.error(err);
+                  } else console.log(`Updated employee's role`);
+                  goBack();
+                }
               );
             });
         });
       });
-  });
-
-  db.query(``, (err, table) => {
-    if (err) {
-      console.error(err);
-    } else console.log(`Updated employee's role`);
-    goBack();
   });
 }
 

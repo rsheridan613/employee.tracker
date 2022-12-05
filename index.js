@@ -53,13 +53,20 @@ function init() {
 }
 
 function viewEmployees() {
-  // Show employee ids, first names, last names, job titles, departments (by name?), salaries, manager (by name?)
-  db.query(``, (err, table) => {
-    if (err) {
-      console.error(err);
-    } else console.table(table);
-    goBack();
-  });
+  // Show employee ids, first names, last names, role, departments (by name?), salaries, manager (by name?)
+  db.query(
+    `SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department, roles.salary, manager_id.first_name AS Manager
+    FROM employees
+    JOIN roles ON employees.role_id = roles.id
+    JOIN departments ON roles.department_id = departments.id
+    JOIN employees manager_id ON manager_id.id = employees.manager_id;`,
+    (err, table) => {
+      if (err) {
+        console.error(err);
+      } else console.table(table);
+      goBack();
+    }
+  );
 }
 
 function addEmployee() {
@@ -103,6 +110,47 @@ function addEmployee() {
 
 function updateRole() {
   // Choose employee, change role to selected
+  var employees = db.query(`SELECT first_name, id FROM employees;`)(
+    ([rows]) => {
+      let employees = rows;
+      const employeeChoices = employees.map(({ id, first_name }) => ({
+        name: first_name,
+        value: id,
+      }));
+
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            choices: employeeChoices,
+            message: "Which employee would you like to update?",
+            name: "pickedEmployee",
+          },
+        ])
+        .then((response) => {
+          db.query(`SELECT title, id FROM roles`).then(([rows]) => {
+            let titles = rows;
+            const titleChoices = titles.map(({ id, title }) => ({
+              role: title,
+              value: id,
+            }));
+            inquirer
+              .prompt({
+                type: "list",
+                choices: titleChoices,
+                message: "Which role would you like to give them?",
+                name: "pickedRole",
+              })
+              .then((choices) => {
+                db.query(
+                  `UPDATE employees SET role_id = ${choices.pickedRole} WHERE id = ${response.pickedEmployee} `
+                );
+              });
+          });
+        });
+    }
+  );
+
   db.query(``, (err, table) => {
     if (err) {
       console.error(err);
@@ -114,7 +162,7 @@ function updateRole() {
 function viewRoles() {
   // Show role id, name, salary, department (by name?)
   db.query(
-    `SELECT roles.id, title, salary FROM roles
+    `SELECT roles.id, title, salary, departments.department AS department FROM roles
     JOIN departments ON roles.department_id = departments.id;`,
     (err, table) => {
       if (err) {
